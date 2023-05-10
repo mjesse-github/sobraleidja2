@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Application extends javafx.application.Application {
+
+    //määrame tüübid
     private final Andmebaas andmed = new Andmebaas();
     private final TextField nimiField = new TextField();
     private final TextField vanusField = new TextField();
@@ -42,16 +44,20 @@ public class Application extends javafx.application.Application {
     public void start(Stage primaryStage) throws Exception {
         failistLugemine("src/andmebaas.txt", andmed);
 
+        //graafika
+        //loome gridi
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
         gridPane.setVgap(10);
         gridPane.setHgap(10);
+        //loome vastavad sisestuskassid
 
         gridPane.add(new Label("Nimi:"), 0, 0);
         gridPane.add(nimiField, 1, 0);
         gridPane.add(new Label("Vanus:"), 0, 1);
         gridPane.add(vanusField, 1, 1);
         gridPane.add(new Label("Kas sulle meeldib kokata ja koristada?"), 0, 2);
+        //valikud!!
         kokkamineKoristamineBox.getItems().addAll("jah", "ei");
         gridPane.add(kokkamineKoristamineBox, 1, 2);
         gridPane.add(new Label("Mis muusikat sa kuulad?"), 0, 3);
@@ -71,6 +77,7 @@ public class Application extends javafx.application.Application {
         gridPane.add(pitsaBox, 1, 7);
         gridPane.add(new Label("Lemmiknumber:"), 0, 8);
         gridPane.add(lemmiknumberField, 1, 8);
+        //nupp mis otsib sarnaseid
         Button otsiButton = new Button("Otsi sarnaseid");
         otsiButton.setOnAction(this::handleOtsiButtonClick);
 
@@ -115,9 +122,10 @@ public class Application extends javafx.application.Application {
         }
         return matchid;
     }
-
+    //loeb olemasolevast failist sisse andmed millega kasutajat
     public static void failistLugemine(String failinimi, Andmebaas andmed) throws IOException {
         File fail = new File(failinimi);
+
         try (Scanner scanner = new Scanner(fail, "UTF-8")) {
             while (scanner.hasNextLine()) {
                 String rida = scanner.nextLine();
@@ -129,11 +137,12 @@ public class Application extends javafx.application.Application {
             throw new RuntimeException(e);
         }
     }
-
+    //kirjutab uue info faili
     public static void failiKirjutamine(String sõne, String failinimi) throws IOException {
         Files.write(Path.of(failinimi), (sõne + "\n").getBytes(), StandardOpenOption.APPEND);
     }
 
+    //erind
     private int parseVanus(String vanusText) throws VanuseErind {
         try {
             return Integer.parseInt(vanusText);
@@ -181,39 +190,40 @@ public class Application extends javafx.application.Application {
             int soovitus = (int) (Math.random() * 40);
             soovitusLabel.setText("Soovitame sul ruletis panustada kogu oma raha numbrile " + soovitus);
 
-        } catch (VanuseErind e) {
+        } catch (VanuseErind e) { //kui vanus ei ole number
             errorLabel.setText(e.getMessage());
             errorLabel.setTextFill(Color.RED);
         }
     }
 
+    //juhuks kui kastid on tühjaks jäetud
     private String validateInputs() {
         if (nimiField.getText().isEmpty()) {
-            return "Please enter a name.";
+            return "Palun sisesta oma nimi.";
         }
         if (vanusField.getText().isEmpty()) {
-            return "Please enter an age.";
+            return "Palun sisesta oma vanus";
         }
         if (kokkamineKoristamineBox.getValue() == null) {
-            return "Please select your preference for cooking and cleaning.";
+            return "Palun valige kas teile meeldib kokata ja koristada.";
         }
         if (muusikaBox.getValue() == null) {
-            return "Please select your music preference.";
+            return "Palun vali oma lemmikmuusik.";
         }
         if (müslisuppBox.getValue() == null) {
-            return "Please select if müsli is a soup or not.";
+            return "Palun vali kas müsli on supp või ei.";
         }
         if (raudVõiSulgBox.getValue() == null) {
-            return "Please select the heavier option between iron and feathers.";
+            return "Palun vasta raua ja sulgede küsimusele.";
         }
         if (jalutuskäikBox.getValue() == null) {
-            return "Please select your preference for long walks on the beach.";
+            return "Palun vali oma eelistus rannajalutuskäikude osas";
         }
         if (pitsaBox.getValue() == null) {
-            return "Please select your pizza preference.";
+            return "Palun vali oma pitsaeelistus.";
         }
         if (lemmiknumberField.getText().isEmpty()) {
-            return "Please enter your favorite number.";
+            return "Palun sisesta oma lemmiknumber.";
         }
         return null;
     }
